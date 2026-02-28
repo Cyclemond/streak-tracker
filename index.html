@@ -12,31 +12,42 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app">
-    <div class="date" id="date"></div>
 
-    <button class="check-btn" id="checkBtn" aria-label="Mark today as done">
-      <svg class="check-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <circle class="circle" cx="50" cy="50" r="45" />
-        <polyline class="checkmark" points="25,52 42,68 75,34" />
-      </svg>
-    </button>
+  <header class="header">
+    <span class="header-title">Streak</span>
+    <button class="add-btn" id="addBtn" aria-label="Add habit">+</button>
+  </header>
 
-    <div class="status" id="status">Tap to check in</div>
+  <main class="grid" id="grid"></main>
 
-    <div class="streak-container">
-      <div class="streak-number" id="streakNumber">0</div>
-      <div class="streak-label">day streak</div>
+  <div class="empty-state" id="emptyState">
+    <div class="empty-icon">&#9711;</div>
+    <p>No habits yet.</p>
+    <p>Tap <strong>+</strong> to add one.</p>
+  </div>
+
+  <!-- Add / Rename modal -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" id="modal">
+      <h2 class="modal-title" id="modalTitle">New Habit</h2>
+      <input class="modal-input" id="modalInput" type="text" maxlength="30" placeholder="Habit name" autocomplete="off" />
+      <div class="modal-actions">
+        <button class="btn-cancel" id="modalCancel">Cancel</button>
+        <button class="btn-save" id="modalSave">Add</button>
+      </div>
     </div>
+  </div>
 
-    <div class="best-label" id="bestLabel"></div>
+  <!-- Action sheet (three-dot menu) -->
+  <div class="sheet-backdrop" id="sheetBackdrop">
+    <div class="sheet" id="sheet">
+      <div class="sheet-name" id="sheetName"></div>
+      <button class="sheet-btn" id="sheetRename">&#9998;&ensp;Rename</button>
+      <button class="sheet-btn sheet-btn--danger" id="sheetDelete">&#128465;&ensp;Delete</button>
+      <button class="sheet-btn sheet-btn--cancel" id="sheetCancel">Cancel</button>
+    </div>
   </div>
 
   <script src="app.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
-    }
-  </script>
 </body>
 </html>

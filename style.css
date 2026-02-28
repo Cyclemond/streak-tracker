@@ -1,148 +1,336 @@
-* {
+/* ── Reset & base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
   height: 100%;
-  overflow: hidden;
 }
 
 body {
-  background: #1a1a2e;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #12121f;
   color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 14px;
+  background: #1a1a2e;
+  border-bottom: 1px solid #2a2a45;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #e0e0ff;
+}
+
+.add-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: #4f46e5;
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.15s;
+}
+.add-btn:active { background: #3730a3; }
+
+/* ── Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 12px;
+  padding: 16px;
+  align-content: start;
 }
 
-.app {
+/* ── Empty state ── */
+.empty-state {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+  color: #555;
+  font-size: 1rem;
+  padding: 40px 16px;
+  text-align: center;
+}
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 8px;
+  opacity: 0.3;
+}
+.empty-state strong { color: #888; }
+
+/* ── Card ── */
+.card {
+  background: #1e1e35;
+  border: 1.5px solid #2e2e50;
+  border-radius: 16px;
+  padding: 12px 10px 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
-  padding: 32px 16px;
-  width: 100%;
-  max-width: 360px;
-}
-
-.date {
-  font-size: 1rem;
-  color: #888;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-/* --- Check button --- */
-.check-btn {
-  background: none;
-  border: none;
+  gap: 8px;
   cursor: pointer;
-  padding: 0;
-  outline: none;
-  border-radius: 50%;
-  transition: transform 0.1s ease;
+  position: relative;
+  transition: border-color 0.35s, background 0.35s;
   -webkit-user-select: none;
   user-select: none;
 }
 
-.check-btn:active {
-  transform: scale(0.93);
+.card:active {
+  transform: scale(0.96);
 }
 
-.check-icon {
-  width: 220px;
-  height: 220px;
+.card.checked {
+  background: #0d2e1a;
+  border-color: #22c55e;
+}
+
+/* Card top row: name + three-dot */
+.card-top {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.card-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #ccc;
+  line-height: 1.3;
+  word-break: break-word;
+  flex: 1;
+}
+
+.card.checked .card-name { color: #86efac; }
+
+.menu-btn {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: -2px;
+  transition: color 0.15s;
+}
+.menu-btn:active { color: #aaa; }
+
+/* SVG circle */
+.card-check {
+  flex-shrink: 0;
+}
+
+.card-svg {
+  width: 80px;
+  height: 80px;
   display: block;
 }
 
-/* Default (unchecked) state */
-.circle {
+.c-circle {
   fill: none;
   stroke: #3a3a5c;
   stroke-width: 5;
-  transition: stroke 0.4s ease, fill 0.4s ease;
+  transition: stroke 0.35s, fill 0.35s;
 }
 
-.checkmark {
+.c-mark {
   fill: none;
   stroke: #3a3a5c;
-  stroke-width: 7;
+  stroke-width: 6.5;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 100;
   stroke-dashoffset: 100;
-  transition: stroke 0.4s ease, stroke-dashoffset 0.4s ease 0.1s;
+  transition: stroke 0.35s, stroke-dashoffset 0.35s ease 0.05s;
 }
 
-/* Checked state */
-.check-btn.checked .circle {
-  fill: #0d3b2e;
+.card.checked .c-circle {
+  fill: #0a2e18;
   stroke: #22c55e;
 }
 
-.check-btn.checked .checkmark {
+.card.checked .c-mark {
   stroke: #22c55e;
   stroke-dashoffset: 0;
 }
 
-/* Pulse animation on check */
+/* Pulse animation */
 @keyframes pulse {
   0%   { transform: scale(1); }
-  40%  { transform: scale(1.08); }
+  40%  { transform: scale(1.06); }
   100% { transform: scale(1); }
 }
+.card.just-checked { animation: pulse 0.3s ease-out; }
 
-.check-btn.just-checked {
-  animation: pulse 0.35s ease-out;
-}
-
-/* --- Status text --- */
-.status {
-  font-size: 1.1rem;
-  color: #888;
-  min-height: 1.5em;
-  transition: color 0.4s ease;
-}
-
-.status.done {
-  color: #22c55e;
-  font-weight: 600;
-}
-
-/* --- Streak --- */
-.streak-container {
+/* Streak */
+.card-streak {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  line-height: 1;
+  align-items: baseline;
   gap: 4px;
 }
 
-.streak-number {
-  font-size: 5rem;
+.streak-num {
+  font-size: 1.6rem;
   font-weight: 700;
   color: #fff;
-  transition: color 0.4s ease;
   line-height: 1;
+  transition: color 0.35s;
 }
 
-.streak-number.on-fire {
-  color: #f97316;
-}
+.streak-num.on-fire { color: #f97316; }
 
-.streak-label {
-  font-size: 0.9rem;
-  color: #666;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.best-label {
-  font-size: 0.85rem;
+.streak-days {
+  font-size: 0.7rem;
   color: #555;
-  min-height: 1.2em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── Modal ── */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal-backdrop.open { display: flex; }
+
+.modal {
+  background: #252540;
+  border-radius: 18px;
+  padding: 24px 20px 20px;
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #e0e0ff;
+}
+
+.modal-input {
+  background: #1a1a2e;
+  border: 1.5px solid #3a3a5c;
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  width: 100%;
+}
+.modal-input:focus { border-color: #4f46e5; }
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-cancel, .btn-save {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn-cancel { background: #2e2e50; color: #aaa; }
+.btn-save   { background: #4f46e5; color: #fff; }
+.btn-cancel:active, .btn-save:active { opacity: 0.75; }
+
+/* ── Action sheet ── */
+.sheet-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 100;
+  align-items: flex-end;
+}
+
+.sheet-backdrop.open { display: flex; }
+
+.sheet {
+  width: 100%;
+  background: #252540;
+  border-radius: 20px 20px 0 0;
+  padding: 8px 0 max(16px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.25s ease;
+}
+
+.sheet-backdrop.open .sheet {
+  transform: translateY(0);
+}
+
+.sheet-name {
+  padding: 10px 20px 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #666;
+  border-bottom: 1px solid #2e2e50;
+}
+
+.sheet-btn {
+  background: none;
+  border: none;
+  color: #e0e0ff;
+  font-size: 1rem;
+  padding: 16px 24px;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.12s;
+}
+.sheet-btn:active { background: #2e2e50; }
+.sheet-btn--danger { color: #f87171; }
+.sheet-btn--cancel {
+  color: #888;
+  border-top: 1px solid #2e2e50;
+  margin-top: 4px;
+  text-align: center;
 }
