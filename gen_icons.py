@@ -1,37 +1,42 @@
 #!/usr/bin/env python3
-"""Generate PWA icons for the Streak habit tracker (no external deps)."""
+"""Generate PWA icons for the Streek habit tracker (no external deps)."""
 import struct, zlib, math, os
 
-BG    = (26, 26, 46)    # #1a1a2e  dark navy background
-GREEN = (34, 197, 94)   # #22c55e  green circle
-WHITE = (255, 255, 255) # white checkmark
+# Fun diagonal gradient: bright lime → deep emerald
+C1    = (74, 222, 128)   # #4ade80  bright lime (top-left)
+C2    = (21, 128,  61)   # #15803d  deep green  (bottom-right)
+WHITE = (255, 255, 255)
+
+def lerp(a, b, t):
+    return (int(a[0] + (b[0] - a[0]) * t),
+            int(a[1] + (b[1] - a[1]) * t),
+            int(a[2] + (b[2] - a[2]) * t))
 
 def draw_icon(size):
-    img = bytearray(bytes(BG) * (size * size))   # fill background
+    # Precompute diagonal gradient lookup (index = x + y, range 0..2*(size-1))
+    max_d = 2 * (size - 1)
+    grad = [lerp(C1, C2, i / max_d) for i in range(max_d + 1)]
 
+    # Fill entire square with gradient (no dark background or circle border)
+    img = bytearray(size * size * 3)
+    for y in range(size):
+        base = y * size * 3
+        for x in range(size):
+            c = grad[x + y]
+            i = base + x * 3
+            img[i] = c[0]; img[i+1] = c[1]; img[i+2] = c[2]
+
+    # ── White checkmark centered in the safe zone ────────────────────
+    # Safe zone = inner 80% of icon. We map SVG "25,52 42,68 75,34"
+    # (100×100 space) into a circle of radius = 33% of icon size.
     cx = cy = size // 2
-    r = size * 0.385        # circle radius = 38.5% of icon size
+    r  = size * 0.33
 
-    # ── Filled green circle ──────────────────────────────────────────
-    y0 = max(0, int(cy - r) - 1)
-    y1 = min(size, int(cy + r) + 2)
-    x0 = max(0, int(cx - r) - 1)
-    x1 = min(size, int(cx + r) + 2)
-    r_sq = r * r
-
-    for y in range(y0, y1):
-        for x in range(x0, x1):
-            if (x - cx) ** 2 + (y - cy) ** 2 <= r_sq:
-                i = (y * size + x) * 3
-                img[i] = GREEN[0]; img[i+1] = GREEN[1]; img[i+2] = GREEN[2]
-
-    # ── White checkmark (two line segments) ─────────────────────────
-    # SVG source coords (100×100 space): "25,52 42,68 75,34"
     def pt(px, py):
         return ((px - 50) / 50 * r + cx, (py - 50) / 50 * r + cy)
 
     p1, p2, p3 = pt(25, 52), pt(42, 68), pt(75, 34)
-    sw_sq = (r * 0.065) ** 2   # stroke half-width squared
+    sw_sq = (size * 0.065) ** 2   # stroke half-width squared
 
     def draw_seg(A, B):
         ax, ay = A; bx, by = B
@@ -65,7 +70,7 @@ def write_png(path, size, img):
     stride = size * 3
     rows = bytearray()
     for y in range(size):
-        rows += b'\x00'                          # PNG filter byte (None)
+        rows += b'\x00'
         rows += img[y * stride:(y + 1) * stride]
 
     png = (

@@ -1,6 +1,6 @@
 {
-  "name": "Streak",
-  "short_name": "Streak",
+  "name": "Streek",
+  "short_name": "Streek",
   "description": "Daily habit streak tracker",
   "start_url": "./index.html",
   "display": "standalone",
