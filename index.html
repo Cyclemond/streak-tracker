@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#1a1a2e" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Streak</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <div class="date" id="date"></div>
+
+    <button class="check-btn" id="checkBtn" aria-label="Mark today as done">
+      <svg class="check-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle class="circle" cx="50" cy="50" r="45" />
+        <polyline class="checkmark" points="25,52 42,68 75,34" />
+      </svg>
+    </button>
+
+    <div class="status" id="status">Tap to check in</div>
+
+    <div class="streak-container">
+      <div class="streak-number" id="streakNumber">0</div>
+      <div class="streak-label">day streak</div>
+    </div>
+
+    <div class="best-label" id="bestLabel"></div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>
