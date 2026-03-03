@@ -110,6 +110,15 @@ body {
   border-color: #22c55e;
 }
 
+/* Missed day heat map: 1 day → orange, 2 days → orange-red, 3+ days → red */
+.card.missed-1 { background: #2a1505; border-color: #c2410c; }
+.card.missed-2 { background: #2a0808; border-color: #b91c1c; }
+.card.missed-3 { background: #350808; border-color: #ef4444; }
+
+.card.missed-1 .card-name { color: #fb923c; }
+.card.missed-2 .card-name { color: #f87171; }
+.card.missed-3 .card-name { color: #fca5a5; }
+
 .card-name {
   font-size: 0.95rem;
   font-weight: 600;

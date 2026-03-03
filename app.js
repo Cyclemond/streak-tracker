@@ -18,6 +18,15 @@
     return dateStr(d);
   }
 
+  function daysSince(lastCheckIn) {
+    if (!lastCheckIn) return 0;
+    const [y, m, d] = lastCheckIn.split('-').map(Number);
+    const last = new Date(y, m - 1, d);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return Math.round((today - last) / 86400000);
+  }
+
   function uid() {
     return Math.random().toString(36).slice(2) + Date.now().toString(36);
   }
@@ -85,8 +94,14 @@
     const streak = displayStreak(h);
     const onFire = streak >= 3;
 
+    const days = daysSince(h.lastCheckIn);
+    const missedClass = !checked && days === 2 ? ' missed-1'
+                      : !checked && days === 3 ? ' missed-2'
+                      : !checked && days >= 4  ? ' missed-3'
+                      : '';
+
     const card = document.createElement('div');
-    card.className = 'card' + (checked ? ' checked' : '') + (h.id === pulseId ? ' just-checked' : '');
+    card.className = 'card' + (checked ? ' checked' : '') + missedClass + (h.id === pulseId ? ' just-checked' : '');
     card.dataset.id = h.id;
 
     card.innerHTML =
