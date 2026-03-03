@@ -2,14 +2,20 @@
   'use strict';
 
   // ── Helpers ──────────────────────────────────────────────
+  function dateStr(d) {
+    return d.getFullYear() + '-' +
+      String(d.getMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getDate()).padStart(2, '0');
+  }
+
   function todayStr() {
-    return new Date().toISOString().slice(0, 10);
+    return dateStr(new Date());
   }
 
   function yesterdayStr() {
     const d = new Date();
     d.setDate(d.getDate() - 1);
-    return d.toISOString().slice(0, 10);
+    return dateStr(d);
   }
 
   function uid() {
