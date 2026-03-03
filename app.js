@@ -90,20 +90,18 @@
     card.dataset.id = h.id;
 
     card.innerHTML =
-      '<div class="card-top">' +
-        '<span class="card-name">' + esc(h.name) + '</span>' +
-        '<button class="menu-btn" aria-label="Options">&#8942;</button>' +
-      '</div>' +
       '<div class="card-check">' +
         '<svg class="card-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">' +
           '<circle class="c-circle" cx="50" cy="50" r="44"/>' +
           '<polyline class="c-mark" points="25,52 42,68 75,34"/>' +
         '</svg>' +
       '</div>' +
+      '<span class="card-name">' + esc(h.name) + '</span>' +
       '<div class="card-streak">' +
         '<span class="streak-num' + (onFire ? ' on-fire' : '') + '">' + streak + '</span>' +
         '<span class="streak-days">day' + (streak === 1 ? '' : 's') + '</span>' +
-      '</div>';
+      '</div>' +
+      '<button class="menu-btn" aria-label="Options">&#8942;</button>';
 
     // Pulse cleanup
     if (h.id === pulseId) {
