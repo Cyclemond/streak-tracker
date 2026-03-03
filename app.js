@@ -81,6 +81,35 @@
     renderGrid(id); // pass id so we can pulse that card
   }
 
+  // ── Test mode ────────────────────────────────────────────
+  let testMode = false;
+
+  function testAdvance(id) {
+    const habits = getHabits();
+    const h = habits.find(h => h.id === id);
+    if (!h) return;
+    const newStreak = h.lastCheckIn === yesterdayStr() ? h.streak + 1 : 1;
+    h.streak = newStreak;
+    h.bestStreak = Math.max(newStreak, h.bestStreak || 0);
+    h.lastCheckIn = todayStr();
+    saveHabits(habits);
+    renderGrid(id);
+  }
+
+  function testSkip(id) {
+    const habits = getHabits();
+    const h = habits.find(h => h.id === id);
+    if (!h || !h.lastCheckIn) return;
+    const [y, m, d] = h.lastCheckIn.split('-').map(Number);
+    h.lastCheckIn = dateStr(new Date(y, m - 1, d - 1));
+    if (daysSince(h.lastCheckIn) >= 6) { // 5 missed days → lose
+      h.streak = 0;
+      h.lastCheckIn = null;
+    }
+    saveHabits(habits);
+    renderGrid();
+  }
+
   // ── Render ───────────────────────────────────────────────
   function displayStreak(h) {
     if (h.lastCheckIn && h.lastCheckIn !== todayStr() && h.lastCheckIn !== yesterdayStr()) {
@@ -97,12 +126,18 @@
     const days = daysSince(h.lastCheckIn);
     const missedClass = !checked && days === 2 ? ' missed-1'
                       : !checked && days === 3 ? ' missed-2'
-                      : !checked && days >= 4  ? ' missed-3'
+                      : !checked && days === 4 ? ' missed-3'
+                      : !checked && days >= 5  ? ' missed-4'
                       : '';
 
     const card = document.createElement('div');
     card.className = 'card' + (checked ? ' checked' : '') + missedClass + (h.id === pulseId ? ' just-checked' : '');
     card.dataset.id = h.id;
+
+    const testBtns = testMode
+      ? '<button class="test-btn test-btn--plus" aria-label="Simulate check-in">+</button>' +
+        '<button class="test-btn test-btn--minus" aria-label="Skip a day">\u2212</button>'
+      : '';
 
     card.innerHTML =
       '<div class="card-check">' +
@@ -116,6 +151,7 @@
         '<span class="streak-num' + (onFire ? ' on-fire' : '') + '">' + streak + '</span>' +
         '<span class="streak-days">day' + (streak === 1 ? '' : 's') + '</span>' +
       '</div>' +
+      testBtns +
       '<button class="menu-btn" aria-label="Options">&#8942;</button>';
 
     // Pulse cleanup
@@ -123,11 +159,23 @@
       card.addEventListener('animationend', () => card.classList.remove('just-checked'), { once: true });
     }
 
-    // Check-in on card tap (not menu btn)
+    // Check-in on card tap (not menu btn or test btns)
     card.addEventListener('click', function (e) {
-      if (e.target.closest('.menu-btn')) return;
+      if (e.target.closest('.menu-btn') || e.target.closest('.test-btn')) return;
       checkIn(h.id);
     });
+
+    // Test mode buttons
+    if (testMode) {
+      card.querySelector('.test-btn--plus').addEventListener('click', function (e) {
+        e.stopPropagation();
+        testAdvance(h.id);
+      });
+      card.querySelector('.test-btn--minus').addEventListener('click', function (e) {
+        e.stopPropagation();
+        testSkip(h.id);
+      });
+    }
 
     // Three-dot menu
     card.querySelector('.menu-btn').addEventListener('click', function (e) {
@@ -241,6 +289,16 @@
   });
 
   // ── Init ─────────────────────────────────────────────────
+  const testToggleBtn = document.getElementById('testToggleBtn');
+  const testBanner    = document.getElementById('testBanner');
+
+  testToggleBtn.addEventListener('click', function () {
+    testMode = !testMode;
+    testToggleBtn.classList.toggle('active', testMode);
+    testBanner.classList.toggle('visible', testMode);
+    renderGrid();
+  });
+
   renderGrid();
 
   if ('serviceWorker' in navigator) {

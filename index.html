@@ -15,8 +15,13 @@
 
   <header class="header">
     <span class="header-title">Streek</span>
-    <button class="add-btn" id="addBtn" aria-label="Add habit">+</button>
+    <div class="header-actions">
+      <button class="test-toggle-btn" id="testToggleBtn" aria-label="Toggle test mode">Test</button>
+      <button class="add-btn" id="addBtn" aria-label="Add habit">+</button>
+    </div>
   </header>
+
+  <div class="test-banner" id="testBanner">Test mode &mdash; + adds a day &nbsp;|&nbsp; &minus; skips a day</div>
 
   <main class="grid" id="grid"></main>
 

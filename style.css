@@ -39,6 +39,42 @@ body {
   color: #e0e0ff;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.test-toggle-btn {
+  background: none;
+  border: 1.5px solid #3a3a5c;
+  border-radius: 8px;
+  color: #555;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 6px 10px;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: border-color 0.15s, color 0.15s;
+}
+.test-toggle-btn.active {
+  border-color: #f59e0b;
+  color: #f59e0b;
+}
+
+/* Test mode banner */
+.test-banner {
+  display: none;
+  background: #2a1f00;
+  color: #f59e0b;
+  font-size: 0.75rem;
+  text-align: center;
+  padding: 7px 16px;
+  letter-spacing: 0.03em;
+}
+.test-banner.visible { display: block; }
+
 .add-btn {
   width: 40px;
   height: 40px;
@@ -110,14 +146,16 @@ body {
   border-color: #22c55e;
 }
 
-/* Missed day heat map: 1 day → orange, 2 days → orange-red, 3+ days → red */
+/* Missed day heat map: 1–4 days missed → orange → red */
 .card.missed-1 { background: #2a1505; border-color: #c2410c; }
-.card.missed-2 { background: #2a0808; border-color: #b91c1c; }
-.card.missed-3 { background: #350808; border-color: #ef4444; }
+.card.missed-2 { background: #2d0c05; border-color: #dc2626; }
+.card.missed-3 { background: #320808; border-color: #ef4444; }
+.card.missed-4 { background: #3d0606; border-color: #ff2222; }
 
 .card.missed-1 .card-name { color: #fb923c; }
 .card.missed-2 .card-name { color: #f87171; }
 .card.missed-3 .card-name { color: #fca5a5; }
+.card.missed-4 .card-name { color: #fecaca; }
 
 .card-name {
   font-size: 0.95rem;
@@ -333,3 +371,23 @@ body {
   margin-top: 4px;
   text-align: center;
 }
+
+/* ── Test mode buttons ── */
+.test-btn {
+  border-radius: 6px;
+  border: 1.5px solid;
+  background: none;
+  font-size: 1rem;
+  font-weight: 700;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s;
+}
+.test-btn--plus  { border-color: #22c55e; color: #22c55e; }
+.test-btn--minus { border-color: #ef4444; color: #ef4444; }
+.test-btn:active { background: rgba(255,255,255,0.08); }
